@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/candidate_name"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical"
+        android:text="Enter Random Number" />
+
+    <TextView
+        android:id="@+id/party"
+        android:layout_width="141dp"
+        android:layout_height="49dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:layout_weight="80"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="46dp"
+        android:layout_height="36dp"
+        android:layout_weight="0.5"
+        android:text="X" />
+
+</LinearLayout>
