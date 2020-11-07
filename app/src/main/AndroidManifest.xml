@@ -18,8 +18,8 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".SplashActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".PublicActivity">
+        <activity android:name=".PublicActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

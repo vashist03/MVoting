@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,9 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
     Button btnLogin, btnRegister;
     TextView txtNic, txtPin;
-    private DataBaseHelper db = new DataBaseHelper(this);
+    DataBaseHelper db = new DataBaseHelper(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,18 +58,36 @@ public class MainActivity extends AppCompatActivity {
                 String nic = txtNic.getText().toString();
                 String pin = txtPin.getText().toString();
 
-                String res = db.checkUser(pin, nic);
-                Log.e("R2", res);
-               // if(res == "Public") {
-                    Intent home = new Intent( MainActivity.this, PublicActivity.class );
-                    startActivity(home);
-                //}else if(res == "Admin") {
-                    //Intent admin = new Intent( MainActivity.this, AdminActivity.class );
-                    //startActivity(admin);
-                //}
+                Cursor res = db.checkUser(pin, nic);
+                if(res.getCount() > 0) {
+                    while (res.moveToNext()) {
+                        String response = res.getString(11);
+                        if(response.equals("Public")) {
+                            Intent home = new Intent( MainActivity.this, PublicActivity.class );
+                            home.putExtra("fname", res.getString(1));
+                            home.putExtra("surname", res.getString(2));
+                            home.putExtra("nic", res.getString(6));
+                            startActivity(home);
+                        }else if(response.equals("Admin")) {
+                            Intent admin = new Intent( MainActivity.this, AdminActivity.class );
+                            startActivity(admin);
+                        }
+                    }
+                }else {
+                    Toast.makeText(MainActivity.this, "Wrong PIN or NIC. Please check again.", Toast.LENGTH_LONG).show();
+                }
+
+
             }
         });
     }
+
+//    public String check(String pin, String nic) {
+//
+//
+//       // Log.e("R2", response);
+//        //return response;
+//    }
 
 
 }

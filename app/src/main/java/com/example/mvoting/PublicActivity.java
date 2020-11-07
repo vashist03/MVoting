@@ -23,11 +23,22 @@ public class PublicActivity extends AppCompatActivity {
     private CandidateAdapter adapter;
     private Button btnVote;
     DataBaseHelper db = new DataBaseHelper(this);
+    String getName, getSurname, getNic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public);
+
+        ArrayList<String> fname = new ArrayList<>();
+        ArrayList<String> surname = new ArrayList<>();
+        ArrayList<String> nic = new ArrayList<>();
+
+        if(getIntent().getExtras() != null) {
+            getName = getIntent().getStringExtra("fname");
+            getSurname = getIntent().getStringExtra("surname");
+            getNic = getIntent().getStringExtra("nic");
+        }
 
         alCandidate = new ArrayList<CandidateModel>();
         listView = findViewById(R.id.LVCandidate);
@@ -55,6 +66,8 @@ public class PublicActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     if(vote != 0) {
+                        //Update user vote
+                        //Add vote to candidate
                         Log.e("selected values ", "candidate: " + candidate + "party: " + party + "vote: " + vote);
                     }
                 }

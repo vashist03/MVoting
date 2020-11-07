@@ -156,7 +156,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public String checkUser(String pin, String nic)
+    public Cursor checkUser(String pin, String nic)
     {
         String response = "";
         db = this.getWritableDatabase();
@@ -164,15 +164,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         Cursor res = db.rawQuery(selectTableStatement, null);
 
-        if(res.getCount() > 0) {
-            while (res.moveToNext()) {
-                response = res.getString(11).toString();
-            }
-        }else {
-            response = "User not found";
-        }
-
-        return response;
+        return res;
     }
 
     public Cursor getCandidate()
