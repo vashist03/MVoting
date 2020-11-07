@@ -3,6 +3,7 @@ package com.example.mvoting;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.example.mvoting.adapter.CandidateAdapter;
+import com.example.mvoting.database.DataBaseHelper;
 import com.example.mvoting.model.CandidateModel;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class PublicActivity extends AppCompatActivity {
     private ArrayList<CandidateModel> alCandidate;
     private CandidateAdapter adapter;
     private Button btnVote;
+    DataBaseHelper db = new DataBaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +32,8 @@ public class PublicActivity extends AppCompatActivity {
         alCandidate = new ArrayList<CandidateModel>();
         listView = findViewById(R.id.LVCandidate);
         listView.setItemsCanFocus(true);
-        for(int i=0;i<10;i++){
-            alCandidate.add(new CandidateModel("Varun Puttur "+i, "Labour Party", 0, 0));
-        }
+
+        populateList();
 
         adapter = new CandidateAdapter(this, alCandidate);
         listView.setAdapter(adapter);
@@ -58,5 +60,19 @@ public class PublicActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void populateList(){
+        Cursor res = db.getCandidate();
+        if(res.getCount() < 0){
+            Log.e("Error","Not able to retrieve candidate data");
+        }
+        else {
+            while (res.moveToNext()) {
+                String candidateName = res.getString(1);
+                String partyName = res.getString(2);
+                alCandidate.add(new CandidateModel(candidateName, partyName, 0, 0));
+            }
+        }
     }
 }

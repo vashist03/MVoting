@@ -12,14 +12,14 @@
         <activity android:name=".SuccessActivity"></activity>
         <activity android:name=".ErrorActivity" />
         <activity
-            android:name=".PublicActivity"
+            android:name=".AddCandidateActivity"
             android:label="@string/title_activity_admin"
             android:theme="@style/Theme.MVoting.NoActionBar" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".SplashActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".AddCandidateActivity">
+        <activity android:name=".PublicActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
