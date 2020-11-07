@@ -16,10 +16,10 @@
             android:label="@string/title_activity_admin"
             android:theme="@style/Theme.MVoting.NoActionBar" />
         <activity android:name=".AdminActivity" />
-        <activity android:name=".AddCandidateActivity" />
+        <activity android:name=".SplashActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".SplashActivity">
+        <activity android:name=".AddCandidateActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
