@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.example.mvoting.model.CandidateModel;
 import com.example.mvoting.model.UserModel;
 
 import java.text.DateFormat;
@@ -26,6 +27,7 @@ import java.util.List;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String USER_TABLE = "tbl_user";
+    public static final String CANDIDATE_TABLE = "tbl_candidate";
     public SQLiteDatabase db;
 
     public DataBaseHelper(@Nullable Context context) {
@@ -44,6 +46,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String createTableStatement="CREATE TABLE IF NOT EXISTS "+ USER_TABLE+"(userId VARCHAR PRIMARY KEY, fname VARCHAR, surname VARCHAR, address VARCHAR, email VARCHAR, dob VARCHAR, nic VARCHAR, phone NUMERIC, pin VARCHAR, vote VARCHAR, voted BOOLEAN, uType VARCHAR)";
         db.execSQL(createTableStatement);
         Log.i("Create Table User","Table User Created");
+        String createTableStatementCandidate ="CREATE TABLE IF NOT EXISTS "+ CANDIDATE_TABLE+"(userId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, party VARCHAR, vote INTEGER, unvote INTEGER)";
+        db.execSQL(createTableStatementCandidate);
+        Log.i("Create Table User","Table Candidate Created");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -86,6 +91,30 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
 
     }
+
+    public boolean addCandidate(CandidateModel candidateModel)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("name", candidateModel.getName());
+        cv.put("party", candidateModel.getParty());
+        cv.put("vote", candidateModel.getVote());
+        cv.put("unvote", candidateModel.getUnvote());
+
+        long insert = db.insert(CANDIDATE_TABLE, null, cv);
+
+        if(insert == -1)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+
     public List<UserModel> getAllElements() {
 
         ArrayList<UserModel> list = new ArrayList<UserModel>();
