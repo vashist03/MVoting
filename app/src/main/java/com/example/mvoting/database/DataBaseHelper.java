@@ -175,6 +175,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return response;
     }
 
+    public Cursor getCandidate()
+    {
+        db = this.getWritableDatabase();
+        String selectTableStatement="SELECT * FROM tbl_candidate";
+
+        Cursor res = db.rawQuery(selectTableStatement, null);
+        return res;
+
+    }
 
 
 

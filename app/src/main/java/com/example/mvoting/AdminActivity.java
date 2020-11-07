@@ -1,12 +1,14 @@
 package com.example.mvoting;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.example.mvoting.adapter.CandidateAdminAdapter;
+import com.example.mvoting.database.DataBaseHelper;
 import com.example.mvoting.model.CandidateModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -21,6 +23,7 @@ public class AdminActivity extends AppCompatActivity {
     private ArrayList<CandidateModel> alCandidateAdmin = new ArrayList<CandidateModel>();
     private CandidateAdminAdapter adapter;
     private ListView listViewAdmin;
+    DataBaseHelper db = new DataBaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +31,7 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
         listViewAdmin = findViewById(R.id.list2);
-        for(int i=0;i<10;i++){
-            alCandidateAdmin.add(new CandidateModel("Varun Puttur "+i, "Labour Party", 0, 0));
-        }
+        populateList();
 
         adapter = new CandidateAdminAdapter(this, alCandidateAdmin);
         listViewAdmin.setAdapter(adapter);
@@ -55,4 +56,20 @@ public class AdminActivity extends AppCompatActivity {
         listViewAdmin.invalidateViews();
 
     }
+
+    public void populateList(){
+        Cursor res = db.getCandidate();
+        if(res.getCount() < 0){
+            Log.e("Error","Not able to retrieve candidate data");
+        }
+        else {
+            while (res.moveToNext()) {
+                String candidateName = res.getString(1);
+                String partyName = res.getString(2);
+                alCandidateAdmin.add(new CandidateModel(candidateName, partyName, 0, 0));
+            }
+        }
+    }
+
+
 }
