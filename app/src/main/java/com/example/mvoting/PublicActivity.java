@@ -53,14 +53,25 @@ public class PublicActivity extends AppCompatActivity {
             getNic = getIntent().getStringExtra("nic");
         }
 
-        alCandidate = new ArrayList<CandidateModel>();
-        listView = findViewById(R.id.LVCandidate);
-        listView.setItemsCanFocus(true);
+        String voted = db.checkVoted(getNic);
+        if(voted.contains("1")){
+            //Redirect to already voted page
+            Intent loginIntent = new Intent( PublicActivity.this,
+                    VotingCompleted.class );
+            startActivity(loginIntent);
+            finish();
+        }else {
 
-        populateList();
+            alCandidate = new ArrayList<CandidateModel>();
+            listView = findViewById(R.id.LVCandidate);
+            listView.setItemsCanFocus(true);
 
-        adapter = new CandidateAdapter(this, alCandidate);
-        listView.setAdapter(adapter);
+            populateList();
+
+            adapter = new CandidateAdapter(this, alCandidate);
+            listView.setAdapter(adapter);
+        }
+
 
         btnVote = findViewById(R.id.btnVoting);
         btnVote.setOnClickListener(new View.OnClickListener() {
@@ -137,5 +148,9 @@ public class PublicActivity extends AppCompatActivity {
                 Log.e("error", databaseError.getCode()+"");
             }
         });
+    }
+
+    public void isVote() {
+
     }
 }

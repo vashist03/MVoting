@@ -222,6 +222,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public String checkVoted(String nic)
+    {
+        String result = "";
+        db = this.getWritableDatabase();
+        String selectTableStatement="SELECT * FROM tbl_user WHERE nic ='"+nic+"'";
+
+        Cursor res = db.rawQuery(selectTableStatement, null);
+        if(res.getCount() < 0){
+            result = "Not found.";
+        }
+        else {
+            while (res.moveToNext()){
+                result = res.getString(10);
+            }
+        }
+        return result;
+    }
+
+
+
+
 
 
 }
