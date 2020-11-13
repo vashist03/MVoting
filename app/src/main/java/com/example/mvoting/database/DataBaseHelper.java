@@ -240,6 +240,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public Cursor getResult() {
+        db = this.getWritableDatabase();
+        String selectTableStatement="SELECT name, party, count(*) FROM tbl_voting GROUP BY name";
+
+        Cursor res = db.rawQuery(selectTableStatement, null);
+        return res;
+    }
+
+
 
 
 

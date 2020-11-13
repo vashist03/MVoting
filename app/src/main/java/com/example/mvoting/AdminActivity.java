@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.mvoting.adapter.CandidateAdminAdapter;
@@ -24,6 +25,7 @@ public class AdminActivity extends AppCompatActivity {
     private CandidateAdminAdapter adapter;
     private ListView listViewAdmin;
     DataBaseHelper db = new DataBaseHelper(this);
+    Button btnResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,17 @@ public class AdminActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent addIntent = new Intent( AdminActivity.this,
                         AddCandidateActivity.class );
+                startActivity(addIntent);
+                finish();
+            }
+        });
+
+        btnResult = findViewById(R.id.btnCheckResult);
+        btnResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addIntent = new Intent( AdminActivity.this,
+                        LiveResult.class );
                 startActivity(addIntent);
                 finish();
             }
