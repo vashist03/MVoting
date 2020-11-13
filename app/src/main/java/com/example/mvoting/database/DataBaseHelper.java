@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.mvoting.model.CandidateModel;
 import com.example.mvoting.model.UserModel;
+import com.example.mvoting.model.VotingModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String USER_TABLE = "tbl_user";
     public static final String CANDIDATE_TABLE = "tbl_candidate";
+    public static final String VOTING_TABLE = "tbl_voting";
     public SQLiteDatabase db;
 
     public DataBaseHelper(@Nullable Context context) {
@@ -49,6 +51,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String createTableStatementCandidate ="CREATE TABLE IF NOT EXISTS "+ CANDIDATE_TABLE+"(userId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, party VARCHAR, vote INTEGER, unvote INTEGER)";
         db.execSQL(createTableStatementCandidate);
         Log.i("Create Table User","Table Candidate Created");
+        String createTableStatementVoting ="CREATE TABLE IF NOT EXISTS "+ VOTING_TABLE+"(userId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, party VARCHAR, vote INTEGER)";
+        db.execSQL(createTableStatementVoting);
+        Log.i("Create Table User","Table voting Created");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -113,6 +118,46 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
 
+    }
+
+    public boolean addVoting(VotingModel voteModel)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("name", voteModel.getName());
+        cv.put("party", voteModel.getParty());
+        cv.put("vote", voteModel.getVote());
+
+        long insert = db.insert(VOTING_TABLE, null, cv);
+
+        if(insert == -1)
+        {
+            Log.e("S", insert+"");
+            return false;
+
+        }
+        else
+        {
+            Log.e("f", insert+"");
+            return true;
+        }
+
+    }
+
+    public boolean updateUserVote(String userNIC)
+    {
+        Log.e("IDDDDDDDDDD", userNIC+"");
+        ContentValues cv = new ContentValues();
+        cv.put("voted", true);
+        long update = db.update(USER_TABLE, cv, "nic = ?", new String[]{userNIC});
+
+        if(update == - 1) {
+            Log.e("user not updated", false+"");
+            return false;
+        }else {
+            return true;
+        }
     }
 
     public List<UserModel> getAllElements() {

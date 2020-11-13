@@ -1,5 +1,6 @@
 package com.example.mvoting;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,6 +15,13 @@ import android.widget.ListView;
 import com.example.mvoting.adapter.CandidateAdapter;
 import com.example.mvoting.database.DataBaseHelper;
 import com.example.mvoting.model.CandidateModel;
+import com.example.mvoting.model.UserModel;
+import com.example.mvoting.model.VotingModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -21,7 +29,10 @@ public class PublicActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayList<CandidateModel> alCandidate;
     private CandidateAdapter adapter;
+    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase1 = FirebaseDatabase.getInstance().getReference().child("users");
     private Button btnVote;
+    private VotingModel votingModel;
     DataBaseHelper db = new DataBaseHelper(this);
     String getName, getSurname, getNic;
 
@@ -29,6 +40,8 @@ public class PublicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         ArrayList<String> fname = new ArrayList<>();
         ArrayList<String> surname = new ArrayList<>();
@@ -67,8 +80,28 @@ public class PublicActivity extends AppCompatActivity {
                     }
                     if(vote != 0) {
                         //Update user vote
+                        updateUserVotingStatus();
+                        db.updateUserVote(getNic);
                         //Add vote to candidate
+                        String id = mDatabase.push().getKey();
+                        votingModel = new VotingModel(candidate, party, 1);
+                        db.addVoting(votingModel);
+                        if(id != "") {
+                            mDatabase.child("voting").push().setValue(votingModel, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    Log.e("Data", "Voting ADDED");
+
+                                }
+                            });
+                        }
                         Log.e("selected values ", "candidate: " + candidate + "party: " + party + "vote: " + vote);
+
+                        //Redirect to success page
+                        Intent loginIntent = new Intent( PublicActivity.this,
+                                SuccessActivity.class );
+                        startActivity(loginIntent);
+                        finish();
                     }
                 }
             }
@@ -87,5 +120,22 @@ public class PublicActivity extends AppCompatActivity {
                 alCandidate.add(new CandidateModel(candidateName, partyName, 0, 0));
             }
         }
+    }
+
+    public void updateUserVotingStatus() {
+        mDatabase1.orderByChild("nic").equalTo(getNic).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+
+                    String key = ds.getKey();
+                    mDatabase1.child(key).child("voted").setValue(true);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("error", databaseError.getCode()+"");
+            }
+        });
     }
 }
