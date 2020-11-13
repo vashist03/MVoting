@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }else {
-                    Toast.makeText(MainActivity.this, "Wrong PIN or NIC. Please check again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Wrong PIN or NIC. Please check and try again.", Toast.LENGTH_LONG).show();
                 }
 
 

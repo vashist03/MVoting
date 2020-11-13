@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         }
                     });
-                    Toast.makeText(RegisterActivity.this, "Registered Successfully....", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, "Voter Registered Successfully....", Toast.LENGTH_LONG).show();
                     Intent loginIntent = new Intent( RegisterActivity.this,
                             MainActivity.class);
                     startActivity(loginIntent);
