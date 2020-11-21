@@ -20,7 +20,7 @@ public class SuccessActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Redirect to already voted page
                 Intent loginIntent = new Intent( SuccessActivity.this,
-                        VotingCompleted.class );
+                        MainActivity.class );
                 startActivity(loginIntent);
                 finish();
             }

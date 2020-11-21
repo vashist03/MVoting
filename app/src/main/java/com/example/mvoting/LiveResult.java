@@ -2,6 +2,7 @@ package com.example.mvoting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,14 @@ public class LiveResult extends AppCompatActivity {
     private LiveResultAdapter adapter;
     private ListView listViewResult;
     DataBaseHelper db = new DataBaseHelper(this);
+
+    @Override
+    public void onBackPressed() {
+        Intent login = new Intent( LiveResult.this,
+                MainActivity.class );
+        startActivity(login);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

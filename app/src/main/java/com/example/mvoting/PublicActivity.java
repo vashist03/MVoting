@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.mvoting.adapter.CandidateAdapter;
 import com.example.mvoting.database.DataBaseHelper;
@@ -27,7 +28,8 @@ import java.util.ArrayList;
 
 public class PublicActivity extends AppCompatActivity {
     private ListView listView;
-    private ArrayList<CandidateModel> alCandidate;
+    private ArrayList<CandidateModel> alCandidate = new ArrayList<CandidateModel>();
+    private static ArrayList<Integer> alCount = new ArrayList<>();
     private CandidateAdapter adapter;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabase1 = FirebaseDatabase.getInstance().getReference().child("users");
@@ -62,13 +64,13 @@ public class PublicActivity extends AppCompatActivity {
             finish();
         }else {
 
-            alCandidate = new ArrayList<CandidateModel>();
+
             listView = findViewById(R.id.LVCandidate);
             listView.setItemsCanFocus(true);
 
             populateList();
 
-            adapter = new CandidateAdapter(this, alCandidate);
+            adapter = new CandidateAdapter(this, alCandidate, alCount);
             listView.setAdapter(adapter);
         }
 
@@ -78,7 +80,7 @@ public class PublicActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Log.e("pos", alCandidate.size()+"");
+                Log.e("AAAA", alCount.size()+"");
                 for(int i = 0; i < alCandidate.size(); i++){
                     String candidate = alCandidate.get(i).getName();
                     String party = alCandidate.get(i).getParty();
@@ -89,31 +91,38 @@ public class PublicActivity extends AppCompatActivity {
                         finish();
                         startActivity(intent);
                     }
-                    if(vote != 0) {
-                        //Update user vote
-                        updateUserVotingStatus();
-                        db.updateUserVote(getNic);
-                        //Add vote to candidate
-                        String id = mDatabase.push().getKey();
-                        votingModel = new VotingModel(candidate, party, 1);
-                        db.addVoting(votingModel);
-                        if(id != "") {
-                            mDatabase.child("voting").push().setValue(votingModel, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    Log.e("Data", "Voting ADDED");
+                    if(alCount.size() == 3) {
+                        if(vote != 0) {
+                            //Update user vote
+                            updateUserVotingStatus();
+                            db.updateUserVote(getNic);
+                            //Add vote to candidate
+                            String id = mDatabase.push().getKey();
+                            votingModel = new VotingModel(candidate, party, 1);
+                            db.addVoting(votingModel);
+                            if(id != "") {
+                                mDatabase.child("voting").push().setValue(votingModel, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        Log.e("Data", "Voting ADDED");
 
-                                }
-                            });
+                                    }
+                                });
+                            }
+                            //Redirect to success page
+                            Intent loginIntent = new Intent( PublicActivity.this,
+                                    SuccessActivity.class );
+                            startActivity(loginIntent);
+                            finish();
                         }
-                        Log.e("selected values ", "candidate: " + candidate + "party: " + party + "vote: " + vote);
-
-                        //Redirect to success page
-                        Intent loginIntent = new Intent( PublicActivity.this,
-                                SuccessActivity.class );
-                        startActivity(loginIntent);
+                    }else if (alCandidate.size() > 3) {
+                        Toast.makeText(PublicActivity.this, "Vote 3 candidates only.", Toast.LENGTH_SHORT).show();
+                        Intent intent = getIntent();
+                        alCount.clear();
                         finish();
+                        startActivity(intent);
                     }
+
                 }
             }
         });
@@ -123,6 +132,7 @@ public class PublicActivity extends AppCompatActivity {
         Cursor res = db.getCandidate();
         if(res.getCount() < 0){
             Log.e("Error","Not able to retrieve candidate data");
+            alCandidate.add(new CandidateModel("", "", 0, 0));
         }
         else {
             while (res.moveToNext()) {
@@ -150,7 +160,8 @@ public class PublicActivity extends AppCompatActivity {
         });
     }
 
-    public void isVote() {
-
+    public void getCheckedVote(String count) {
+        String voted = count;
+        Log.e("VOTED", voted+"");
     }
 }

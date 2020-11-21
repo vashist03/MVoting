@@ -97,16 +97,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean addCandidate(CandidateModel candidateModel)
+    public boolean addCandidate(ArrayList<CandidateModel> candidateModel)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-
-        cv.put("name", candidateModel.getName());
-        cv.put("party", candidateModel.getParty());
-        cv.put("vote", candidateModel.getVote());
-        cv.put("unvote", candidateModel.getUnvote());
-
+        for (int i = 0; i < candidateModel.size(); i++) {
+            cv.put("name", candidateModel.get(i).getName());
+            cv.put("party", candidateModel.get(i).getParty());
+            cv.put("vote", candidateModel.get(i).getVote());
+            cv.put("unvote", candidateModel.get(i).getUnvote());
+        }
         long insert = db.insert(CANDIDATE_TABLE, null, cv);
 
         if(insert == -1)
@@ -242,11 +242,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getResult() {
         db = this.getWritableDatabase();
-        String selectTableStatement="SELECT name, party, count(*) FROM tbl_voting GROUP BY name";
+        String selectTableStatement="SELECT name, party, count(*) FROM tbl_voting GROUP BY name ORDER BY count(*) desc";
 
         Cursor res = db.rawQuery(selectTableStatement, null);
         return res;
     }
+
+    public void deleteCandidate(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + CANDIDATE_TABLE+ " WHERE name='"+name+"'");
+        db.close();
+    }
+
 
 
 

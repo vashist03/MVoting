@@ -33,6 +33,7 @@ public class SplashActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseCandidate = FirebaseDatabase.getInstance().getReference().child("candidate");
     private UserModel user;
     private CandidateModel candidate;
+    private ArrayList<CandidateModel> alcandidate = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Toast.makeText(SplashActivity.this, "Application starting... ", Toast.LENGTH_LONG).show();
@@ -99,7 +100,8 @@ public class SplashActivity extends AppCompatActivity {
                     String fbUnvote = ds.child("unvote").getValue().toString();
 
                     candidate = new CandidateModel(fbName, fbParty, Integer.parseInt(fbVote), Integer.parseInt(fbUnvote));
-                    dataBaseHelper.addCandidate(candidate);
+                    alcandidate.add(candidate);
+                    dataBaseHelper.addCandidate(alcandidate);
 
                 }
             }

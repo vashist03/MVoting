@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,15 +31,17 @@ public class AddCandidateActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseCandidate = FirebaseDatabase.getInstance().getReference().child("candidate");
     private DataBaseHelper db = new DataBaseHelper(this);
     private CandidateModel candidate;
+    private static ArrayList<CandidateModel> alCandidate = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_candidate);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        alCandidate.clear();
 
         txtCandidateName = findViewById(R.id.txtCandidateName);
         txtPartyName = findViewById(R.id.txtPartyName);
-
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,33 +62,15 @@ public class AddCandidateActivity extends AppCompatActivity {
 
                 String id = mDatabase.push().getKey();
                 CandidateModel candidateModel = new CandidateModel(candidateName, partyName, 0, 0);
-                db.addCandidate(candidateModel);
+                alCandidate.add(new CandidateModel(candidateName,  partyName, 0, 0));
+                db.addCandidate(alCandidate);
+
                 if(id != "") {
                     mDatabase.child("candidate").push().setValue(candidateModel, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             Log.e("Data", "Candidate ADDED");
 
-                        }
-                    });
-
-                    mDatabaseCandidate.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
-
-                                String fbName = ds.child("name").getValue().toString();
-                                String fbParty= ds.child("party").getValue().toString();
-                                int fbVote = Integer.parseInt(ds.child("vote").getValue().toString());
-                                int fbUnvote = Integer.parseInt(ds.child("unvote").getValue().toString());
-
-                                candidate = new CandidateModel(fbName, fbParty, fbVote, fbUnvote);
-                                db.addCandidate(candidate);
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.e("error", databaseError.getCode()+"");
                         }
                     });
 

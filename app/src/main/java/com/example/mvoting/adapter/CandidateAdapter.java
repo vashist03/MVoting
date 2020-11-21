@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mvoting.PublicActivity;
 import com.example.mvoting.R;
 import com.example.mvoting.model.CandidateModel;
 
@@ -28,13 +29,23 @@ public class CandidateAdapter extends BaseAdapter {
 
     private Context context;
     private static ArrayList<CandidateModel> aList;
+    private static ArrayList<Integer> aCount;
     boolean[] checkBoxState;
 
     LayoutInflater mInflater;
-    public CandidateAdapter(Context context, ArrayList<CandidateModel> aList){
+    public CandidateAdapter(Context context, ArrayList<CandidateModel> aList, ArrayList<Integer> aCount){
         this.context = context;
         this.aList  = aList;
+        this.aCount = aCount;
         checkBoxState = new boolean [aList.size()];
+    }
+
+    public static ArrayList<Integer> getaCount() {
+        return aCount;
+    }
+
+    public static void setaCount(ArrayList<Integer> aCount) {
+        CandidateAdapter.aCount = aCount;
     }
 
     @Override
@@ -87,11 +98,21 @@ public class CandidateAdapter extends BaseAdapter {
         holder.vote.setChecked(checkBoxState[position]);
         holder.vote.setOnClickListener(new View.OnClickListener() {
 
+            int i = 0;
             public void onClick(View v) {
+
                 if(((CheckBox)v).isChecked()) {
                     checkBoxState[position] = true;
+                    if(checkBoxState[position] == true) {
+                        i++;
+                        aCount.add(i);
+                    }
+                    PublicActivity x = new PublicActivity();
+                    x.getCheckedVote(aCount.size()+"");
+
                     aList.add(new CandidateModel(aList.get(position).getName(), aList.get(position).getParty(), 1, 0));
                     Log.e("Check candidate", aList.get(position).getName());
+                    Log.e("Check", ((CheckBox) v).isChecked()+"");
                 }else {
                     checkBoxState[position] = false;
                     aList.add(new CandidateModel(aList.get(position).getName(), aList.get(position).getParty(), 1, 1));
