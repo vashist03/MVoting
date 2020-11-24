@@ -88,7 +88,7 @@ public class CandidateAdminAdapter extends BaseAdapter {
 //                CreateInvoiceLinesActivity.delete(position);
                 AdminActivity x = new AdminActivity();
                 Log.e("D", position+"");
-                x.delete(position);
+                x.delete(context, position);
 
             }
         });

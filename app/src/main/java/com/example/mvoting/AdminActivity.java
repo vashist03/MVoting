@@ -1,5 +1,6 @@
 package com.example.mvoting;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ public class AdminActivity extends AppCompatActivity {
     private static ArrayList<CandidateModel> alCandidateAdmin;
     private static CandidateAdminAdapter adapter;
     private static ListView listViewAdmin;
-    DataBaseHelper db = new DataBaseHelper(this);
+    DataBaseHelper db1 = new DataBaseHelper(this);
     Button btnResult;
 
     @Override
@@ -75,8 +76,9 @@ public class AdminActivity extends AppCompatActivity {
         });
     }
 
-    public void delete(int position){
+    public void delete(Context context, int position){
         Log.e("ERR", alCandidateAdmin.get(position).getName()+"");
+        DataBaseHelper db = new DataBaseHelper(context);
         db.deleteCandidate(alCandidateAdmin.get(position).getName());
         alCandidateAdmin.remove(position);
 
@@ -85,7 +87,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void populateList(){
-        Cursor res = db.getCandidate();
+        Cursor res = db1.getCandidate();
         if(res.getCount() < 0){
             alCandidateAdmin.add(new CandidateModel("", "", 0, 0));
             Log.e("Error","Not able to retrieve candidate data");
