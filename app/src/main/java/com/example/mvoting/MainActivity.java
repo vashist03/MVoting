@@ -44,38 +44,6 @@ public class MainActivity extends AppCompatActivity {
         txtNic = findViewById(R.id.editTextTextPersonName);
         txtPin = findViewById(R.id.editTextNumberPassword2);
 
-        Executor executor = Executors.newSingleThreadExecutor();
-
-        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this)
-                .setTitle("Fingerprint Authentication")
-                .setSubtitle("Please your finger to your phone screen")
-                .setNegativeButton("Cancel", executor, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).build();
-
-        MainActivity mainActivity = this;
-
-        btnFinger = findViewById(R.id.btnFinger);
-        btnFinger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                biometricPrompt.authenticate(new CancellationSignal(), executor, new BiometricPrompt.AuthenticationCallback() {
-                    @Override
-                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                        mainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "Authenticated", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override

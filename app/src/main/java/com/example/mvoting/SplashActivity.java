@@ -1,6 +1,8 @@
 package com.example.mvoting;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
 
 import com.example.mvoting.database.DataBaseHelper;
@@ -19,14 +21,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class SplashActivity extends AppCompatActivity {
+    Button btnFinger;
     private static int SPLASH_TIME_OUT= 7000;
     private DataBaseHelper dataBaseHelper;
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
@@ -44,17 +51,41 @@ public class SplashActivity extends AppCompatActivity {
         retrieveUsersFB();
         retrieveCandidateFB();
 
-        new Handler().postDelayed (new Runnable () {
-            @Override
-            public void run () {
-                //Redirect to login page
-                Intent loginIntent = new Intent( SplashActivity.this,
-                        MainActivity.class );
-                startActivity(loginIntent);
-                finish();
+        Executor executor = Executors.newSingleThreadExecutor();
 
+        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this)
+                .setTitle("Fingerprint Authentication")
+                .setSubtitle("Please your finger to your phone screen")
+                .setNegativeButton("Cancel", executor, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).build();
+
+        SplashActivity splashActivity = this;
+
+        btnFinger = findViewById(R.id.btnFinger2);
+        btnFinger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                biometricPrompt.authenticate(new CancellationSignal(), executor, new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        splashActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //Redirect to login page
+                                Intent loginIntent = new Intent( SplashActivity.this,
+                                        MainActivity.class );
+                                startActivity(loginIntent);
+                                finish();
+                            }
+                        });
+                    }
+                });
             }
-        } , SPLASH_TIME_OUT );
+        });
     }
 
     public void retrieveUsersFB() {
