@@ -3,6 +3,7 @@ package com.example.mvoting;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.example.mvoting.database.DataBaseHelper;
@@ -18,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -41,6 +43,7 @@ public class SplashActivity extends AppCompatActivity {
     private UserModel user;
     private CandidateModel candidate;
     private ArrayList<CandidateModel> alcandidate = new ArrayList<>();
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Toast.makeText(SplashActivity.this, "Application starting... ", Toast.LENGTH_LONG).show();

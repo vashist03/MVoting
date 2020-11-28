@@ -23,11 +23,7 @@ import com.google.firebase.database.core.Constants;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,23 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = etEmail.getText().toString();
                 String dob = etDob.getText().toString();
 
-                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = new Date();
-                String dateInString = "24-03-2014";
-                dob = dob.replace("/", "-");
-                Date date1 = null;
-                try {
-                    date1 = dateFormat.parse(dob);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                Log.e("date formayyed", dateFormat.format(date1));
-                long diff = Math.abs(date.getTime() - date1.getTime());
-                long diffDays = diff / (24 * 60 * 60 * 1000);
-                Log.e("day diff", diffDays+"");
-
-
-
                 Log.e("fname", fname);
                 Log.e("surname", surname);
                 Log.e("address", address);
@@ -93,27 +72,25 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.e("email", email);
                 Log.e("dob", dob);
 
-
                 Log.e("dob", mDatabase.getRoot()+"");
                 String id = mDatabase.push().getKey();
                 UserModel userModel = new UserModel(id, fname, surname, address, nic, pin, phone, email, dob, "0", false, "Public");
                 //userLists.add(userModel);
-                if(diffDays > 18){
-                    if(id != "") {
-                        mDatabase.child("users").push().setValue(userModel, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                Log.e("Data", "ADDED");
 
-                            }
-                        });
-                        Toast.makeText(RegisterActivity.this, "Voter Registered Successfully....", Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent( RegisterActivity.this,
-                                MainActivity.class);
-                        startActivity(loginIntent);
-                    }
-                }else{
-                    Toast.makeText(RegisterActivity.this, "Error not registered....Must be 18 years old.", Toast.LENGTH_LONG).show();
+                if(id != "") {
+                    mDatabase.child("users").push().setValue(userModel, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            Log.e("Data", "ADDED");
+
+                        }
+                    });
+                    Toast.makeText(RegisterActivity.this, "Voter Registered Successfully....", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent( RegisterActivity.this,
+                            MainActivity.class);
+                    startActivity(loginIntent);
+                }else {
+                    Toast.makeText(RegisterActivity.this, "Error not registered....", Toast.LENGTH_LONG).show();
                 }
             }
         });
