@@ -50,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.editTextTextEmailAddress);
         etDob = findViewById(R.id.editTextDate3);
 
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +63,29 @@ public class RegisterActivity extends AppCompatActivity {
                 String phone = etPhone.getText().toString();
                 String email = etEmail.getText().toString();
                 String dob = etDob.getText().toString();
+
+
+                int current = 2020;     //input string
+                String yr_age = "";     //substring containing last 4 characters
+                int age_voter;
+
+
+                if (dob.length() > 4)
+                {
+                    yr_age = dob.substring(dob.length() - 4);
+
+                    int voter_yr =Integer.parseInt(yr_age);
+
+                   age_voter = (current - voter_yr);
+
+                }
+                else
+                {
+                    yr_age = dob;
+                    int voter_yr = Integer.parseInt(yr_age);
+                    age_voter = (current - voter_yr);
+                }
+
 
                 Log.e("fname", fname);
                 Log.e("surname", surname);
@@ -78,17 +102,24 @@ public class RegisterActivity extends AppCompatActivity {
                 //userLists.add(userModel);
 
                 if(id != "") {
-                    mDatabase.child("users").push().setValue(userModel, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            Log.e("Data", "ADDED");
+                    if (age_voter > 18){
+                        mDatabase.child("users").push().setValue(userModel, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                Log.e("Data", "ADDED");
 
-                        }
-                    });
-                    Toast.makeText(RegisterActivity.this, "Voter Registered Successfully....", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent( RegisterActivity.this,
-                            MainActivity.class);
-                    startActivity(loginIntent);
+                            }
+                        });
+                        Toast.makeText(RegisterActivity.this, "Voter Registered Successfully....", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent( RegisterActivity.this,
+                                MainActivity.class);
+                        startActivity(loginIntent);
+
+                    }
+                    else{
+                        Toast.makeText(RegisterActivity.this, "Under Age User....", Toast.LENGTH_LONG).show();
+                    }
+
                 }else {
                     Toast.makeText(RegisterActivity.this, "Error not registered....", Toast.LENGTH_LONG).show();
                 }
